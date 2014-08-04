@@ -13,6 +13,7 @@ $lines = array(
 */
 require_once( __DIR__ . '/crons.php' );
 
+// split out the cron time and the command
 foreach ( $lines as $i => $line )
 {
     $parts = explode( ' ', $line );
@@ -22,8 +23,6 @@ foreach ( $lines as $i => $line )
     $jobs[$i]['command'] = implode( array_diff( $parts, $time ), ' ' );
 }
 
-// do like 5 at a time?
-$chunks = array_chunk( $jobs, 5 );
 foreach ( $jobs as $job )
 {
     // order of the segment array
