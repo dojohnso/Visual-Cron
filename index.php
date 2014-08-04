@@ -63,6 +63,10 @@ foreach ( $jobs as $job )
             padding:5px;
         }
 
+        a, a:visited {
+            color:#000;
+        }
+
         .command {
             margin-left:14px;
             border:1px solid white;
@@ -74,6 +78,14 @@ foreach ( $jobs as $job )
             text-align:center;
             color:white;
             width:1152px;
+        }
+
+        .month a, .month a:visited {
+            color:#fff;
+        }
+
+        .day a, .day a:visited {
+            color:#000;
         }
 
         .day {
@@ -119,13 +131,28 @@ foreach ( $jobs as $job )
 <body>
 
 <?php
-$mnth = date('n'); // (1-12)
-$d = date('j'); // (1-31)
-$w = date('w');
+$mnth = $_GET['m'] ?: date('n'); // (1-12)
+$prev_mnth = $mnth - 1;
+$next_mnth = $mnth + 1;
+if ( $prev_mnth == 0 ) { $prev_mnth = 12; }
+if ( $next_mnth == 13 ) { $next_mnth = 1; }
+
+$d = $_GET['d'] ?: date('j'); // (1-31)
+$prev_d = $d - 1;
+$next_d = $d + 1;
+if ( $prev_d == 0 ) { $prev_d = 31; }
+if ( $next_d == 32 ) { $next_d = 1; }
+
+$dow = $_GET['dow'] ?: date('w'); // (0-6) (0 = Sunday)
+$prev_w = $dow - 1;
+$next_w = $dow + 1;
+if ( $prev_w == -1 ) { $prev_w = 6; }
+if ( $next_w == 7 ) { $next_w = 0; }
+
 $maxcount = 0;
-echo '<div class="month">Prev Month</div>';
+echo '<div class="month"><a href="?d='.$d.'&m='.$prev_mnth.'&dow='.$dow.'">Prev Month</a></div>';
 echo '<div class="month">';
-    echo '<div class="day">Prev Day</div>';
+    echo '<div class="day"><a href="?d='.$prev_d.'&m='.$mnth.'&dow='.$dow.'">Prev Day</a></div>';
     echo '<div class="day">';
     for ( $h = 0; $h < 24; $h++ )
     {
@@ -138,7 +165,7 @@ echo '<div class="month">';
             foreach ( $crons AS $command => $times )
             {
                 if (
-                    in_array( $w, $times['days_of_week'] )
+                    in_array( $dow, $times['days_of_week'] )
                     && in_array( $m, $times['minutes'] )
                     && in_array( $h, $times['hours'] )
                     && in_array( $d, $times['days'] )
@@ -168,9 +195,9 @@ echo '<div class="month">';
     }
     echo '<div class="clear">Max count: ' . $maxcount . '</div>';
     echo '</div>';
-    echo '<div class="day">Next Day</div>';
+    echo '<div class="day"><a href="?d='.$next_d.'&m='.$mnth.'&dow='.$dow.'">Next Day</a></div>';
 echo '</div>';
-echo '<div class="month">Next Month</div>';
+echo '<div class="month"><a href="?d='.$d.'&m='.$next_mnth.'&dow='.$dow.'">Next Month</a></div>';
 ?>
 </body>
 </html>
