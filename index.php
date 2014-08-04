@@ -25,7 +25,7 @@ foreach ( $lines as $i => $line )
 
 foreach ( $jobs as $job )
 {
-    // order of the segment array
+    // order of the parsed array
     // 0 minutes (0 - 59)
     // 1 hours (0 - 23)
     // 2 days (1 - 31)
@@ -39,16 +39,16 @@ foreach ( $jobs as $job )
     $months = $parsed[3];
     $days_of_week = $parsed[4];
 
-    // do this instead of a huge multidemensional array for memory purposes
+    // do this instead of a huge multidemensional array (like [$months][$days][$hours][$minutes]) for memory purposes
     $crons[$job['command']]['minutes'] = $minutes;
     $crons[$job['command']]['hours'] = $hours;
     $crons[$job['command']]['days'] = $days;
     $crons[$job['command']]['months'] = $months;
     $crons[$job['command']]['days_of_week'] = $days_of_week;
 }
-?>
 
-<html>
+// yes yes, i know...
+?><html>
 <head>
     <style>
         body {
@@ -165,6 +165,7 @@ echo '<div class="month">';
         {
             $active = '';
             $commands = array();
+            // find the crons that run during this minute
             foreach ( $crons AS $command => $times )
             {
                 if (
@@ -185,6 +186,7 @@ echo '<div class="month">';
             {
                 $maxcount = $count;
             }
+            // display the block, put commands in the title for hover preview
             $this_time = str_pad( $h, 2, '0', STR_PAD_LEFT ) . ':' . str_pad( $m, 2, '0', STR_PAD_LEFT );
             $opacity = $count ? $count * 0.05 : 1;
             echo '<div style="opacity:' . $opacity . '" class="minute '. $active . '" title="' . $this_time . ($commands ? ' => ' . "\n" . implode( "\n\n", $commands ) : '' ) . '">';
