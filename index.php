@@ -160,7 +160,6 @@ echo '<div class="month">';
     for ( $h = 0; $h < 24; $h++ )
     {
         echo '<div class="hour">';
-        echo $h;
         for ( $m = 0; $m < 60; $m++ )
         {
             $active = '';
@@ -189,6 +188,7 @@ echo '<div class="month">';
             // display the block, put commands in the title for hover preview
             $this_time = str_pad( $h, 2, '0', STR_PAD_LEFT ) . ':' . str_pad( $m, 2, '0', STR_PAD_LEFT );
             $opacity = $count ? $count * 0.05 : 1;
+            if ( $m % 15 == 0 ) { echo $this_time; }
             echo '<div style="opacity:' . $opacity . '" class="minute '. $active . '" title="' . $this_time . ($commands ? ' => ' . "\n" . implode( "\n\n", $commands ) : '' ) . '">';
             if ( $count )
             {
