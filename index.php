@@ -150,9 +150,13 @@ if ( $prev_w == -1 ) { $prev_w = 6; }
 if ( $next_w == 7 ) { $next_w = 0; }
 
 $maxcount = 0;
-echo '<div class="month"><a href="?d='.$d.'&m='.$prev_mnth.'&dow='.$dow.'">Prev Month</a></div>';
+echo '<div class="month">
+    <a href="?d='.$d.'&m='.$prev_mnth.'&dow='.$dow.'">Prev Month</a>&nbsp;&nbsp;&nbsp;//&nbsp;&nbsp;&nbsp;
+    <a href="?d='.$prev_d.'&m='.$mnth.'&dow='.$dow.'">Prev Day</a>&nbsp;&nbsp;&nbsp;||&nbsp;&nbsp;&nbsp;
+    <a href="?d='.$next_d.'&m='.$mnth.'&dow='.$dow.'">Next Day</a>&nbsp;&nbsp;&nbsp;\\\\&nbsp;&nbsp;&nbsp;
+    <a href="?d='.$d.'&m='.$next_mnth.'&dow='.$dow.'">Next Month</a>
+</div>';
 echo '<div class="month">';
-    echo '<div class="day"><a href="?d='.$prev_d.'&m='.$mnth.'&dow='.$dow.'">Prev Day</a></div>';
     echo '<div class="day">';
     for ( $h = 0; $h < 24; $h++ )
     {
@@ -195,9 +199,14 @@ echo '<div class="month">';
     }
     echo '<div class="clear">Max count: ' . $maxcount . '</div>';
     echo '</div>';
-    echo '<div class="day"><a href="?d='.$next_d.'&m='.$mnth.'&dow='.$dow.'">Next Day</a></div>';
 echo '</div>';
-echo '<div class="month"><a href="?d='.$d.'&m='.$next_mnth.'&dow='.$dow.'">Next Month</a></div>';
+echo '<div class="month">
+    <a href="?d='.$d.'&m='.$prev_mnth.'&dow='.$dow.'">Prev Month</a>&nbsp;&nbsp;&nbsp;//&nbsp;&nbsp;&nbsp;
+    <a href="?d='.$prev_d.'&m='.$mnth.'&dow='.$dow.'">Prev Day</a>&nbsp;&nbsp;&nbsp;||&nbsp;&nbsp;&nbsp;
+    <a href="?d='.$next_d.'&m='.$mnth.'&dow='.$dow.'">Next Day</a>&nbsp;&nbsp;&nbsp;\\\\&nbsp;&nbsp;&nbsp;
+    <a href="?d='.$d.'&m='.$next_mnth.'&dow='.$dow.'">Next Month</a>
+</div>';
+
 ?>
 </body>
 </html>
