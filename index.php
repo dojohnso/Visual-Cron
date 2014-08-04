@@ -3,26 +3,27 @@ require_once( __DIR__ . '/tdcron.php');
 require_once( __DIR__ . '/tdcron_entry.php');
 
 // read from file? input? whatever
-
+/*
+crons.php should hold something like the following:
 $lines = array(
+    '0 5 * * * dummy run',
+    '* * * * * other dummy job',
+    ...
 );
-
-$colors = array( 'red', 'blue', 'yellow', 'gray', 'green' );
+*/
+require_once( __DIR__ . '/crons.php' );
 
 foreach ( $lines as $i => $line )
 {
     $parts = explode( ' ', $line );
     $time = array_slice($parts, 0, 5);
+
     $jobs[$i]['time'] = implode( $time, ' ' );
     $jobs[$i]['command'] = implode( array_diff( $parts, $time ), ' ' );
-    $jobs[$i]['color'] = array_shift($colors);
-
-    if ( empty( $jobs[$i]['color'] ) )
-    {
-        $colors = array( 'red', 'blue', 'yellow', 'gray', 'green' );
-    }
 }
 
+// do like 5 at a time?
+$chunks = array_chunk( $jobs, 5 );
 foreach ( $jobs as $job )
 {
     // order of the segment array
@@ -39,135 +40,137 @@ foreach ( $jobs as $job )
     $months = $parsed[3];
     $days_of_week = $parsed[4];
 
-    foreach ( $months as $month )
+    // do this instead of a huge multidemensional array for memory purposes
+    $crons[$job['command']]['minutes'] = $minutes;
+    $crons[$job['command']]['hours'] = $hours;
+    $crons[$job['command']]['days'] = $days;
+    $crons[$job['command']]['months'] = $months;
+    $crons[$job['command']]['days_of_week'] = $days_of_week;
+}
+?>
+
+<html>
+<head>
+    <style>
+        body {
+            background:#111;
+            font-size:12px;
+            font-family:Helvetica;
+        }
+
+        div {
+            margin:5px;
+            padding:5px;
+        }
+
+        .command {
+            margin-left:14px;
+            border:1px solid white;
+            padding:2px 4px;
+        }
+        .month {
+            border:2px solid white;
+            margin:10px auto;
+            text-align:center;
+            color:white;
+            width:1152px;
+        }
+
+        .day {
+            border:2px solid white;
+            background:#ccc;
+            text-align:center;
+            color:#000;
+        }
+
+        .hour {
+            background:#fefefe;
+            border:1px solid #999;
+            float:left;
+            padding:2px;
+            text-align:center;
+            margin:5px 0px;
+            width:41px;
+        }
+
+        .minute {
+            border:1px solid #ccc;
+            text-align:center;
+            font-size:smaller;
+            padding:2px;
+            min-height:14px;
+        }
+
+        .active {
+            border:1px solid #000;
+            background:#000;
+            color:white;
+            opacity:0.1;
+        }
+
+        .clear {
+            clear:both;
+            padding:0;
+            margin:0;
+            border:0;
+        }
+    </style>
+</head>
+<body>
+
+<?php
+$mnth = date('n'); // (1-12)
+$d = date('j'); // (1-31)
+$w = date('w');
+$maxcount = 0;
+echo '<div class="month">Prev Month</div>';
+echo '<div class="month">';
+    echo '<div class="day">Prev Day</div>';
+    echo '<div class="day">';
+    for ( $h = 0; $h < 24; $h++ )
     {
-        foreach ( $days as $day )
+        echo '<div class="hour">';
+        echo $h;
+        for ( $m = 0; $m < 60; $m++ )
         {
-            foreach ( $hours as $i => $hour )
+            $active = '';
+            $commands = array();
+            foreach ( $crons AS $command => $times )
             {
-                foreach ( $minutes as $minute )
+                if (
+                    in_array( $w, $times['days_of_week'] )
+                    && in_array( $m, $times['minutes'] )
+                    && in_array( $h, $times['hours'] )
+                    && in_array( $d, $times['days'] )
+                    && in_array( $mnth, $times['months'] )
+                )
                 {
-                    $crons[$job['command']][$month][$day][$hour][$minute] = true;
-                    $crons[$job['command']][$month][$day]['time'] = str_pad( $hour, 2, '0', STR_PAD_LEFT ) . ':' . str_pad( $minute, 2, '0', STR_PAD_LEFT );
-                    $crons[$job['command']]['days_of_week'] = $days_of_week;
-                    $crons[$job['command']]['color'] = $job['color'];
+                    $active = 'active';
+                    $commands[] = $command;
                 }
             }
-        }
-    }
-}
 
-echo '<style>
-body {
-    background:#111;
-    font-size:12px;
-    font-family:Helvetica;
-}
-
-div {
-    margin:5px;
-    padding:5px;
-}
-
-.command {
-    margin-left:14px;
-    border:1px solid white;
-    padding:2px 4px;
-}
-.month {
-    border:2px solid white;
-    background:green;
-}
-
-.day {
-    border:2px solid white;
-    background:orange;
-}
-
-.hour {
-    border:2px solid red;
-    background:#eee;
-    margin-bottom:25px;
-    float:left;
-    padding:2px;
-    text-align:center;
-    margin:5px 7px;
-    width:2.5%;
-}
-
-.minute {
-    border:1px solid #ccc;
-    text-align:center;
-    font-size:smaller;
-    padding:2px;
-    min-height:12px;
-}
-
-.active {
-    border:1px solid #000;
-    background:#000;
-    color:white;
-    opacity:0.1;
-}
-
-.now {
-    border:2px solid red;
-}
-
-</style>
-';
-for ( $mnth = 8; $mnth < 9; $mnth++ )
-{
-    echo '<div class="month">';
-    for ( $d = 5; $d < 6; $d++ )
-    {
-        echo '<div class="day">';
-        for ( $h = 0; $h < 24; $h++ )
-        {
-            echo '<div class="hour">';
-            echo $h;
-            for ( $m = 0; $m < 60; $m++ )
+            $count = count( $commands );
+            if ( $count > $maxcount )
             {
-                $color = '';
-                $active = '';
-                $now = '';
-                $commands = array();
-                foreach ( $crons AS $command => $times )
-                {
-                    if ( isset( $times[$mnth][$d][$h][$m] ) && in_array( date('w'), $times['days_of_week'] ) )
-                    {
-                        $active = 'active';
-                        $commands[] = $command;
-                        $color = $times['color'];
-                    }
-                }
-
-                if ( $h == date( 'G' ) && str_pad( $m, 2, '0', STR_PAD_LEFT ) == date( 'i' ) )
-                {
-                    $now = 'now';
-                }
-
-                $count = count( $commands );
-                $this_time = str_pad( $h, 2, '0', STR_PAD_LEFT ) . ':' . str_pad( $m, 2, '0', STR_PAD_LEFT );
-                $opacity = $count ? $count * 0.2 : 1;
-                echo '<div style="opacity:' . $opacity . '" class="minute '. $active . ' ' . $now . ' ' . $color . '" title="' . $this_time . ($commands ? ' => ' . implode( ', ', $commands ) : '' ) . '">';
-                if ( $count )
-                {
-                    echo $count;
-                }
-                echo '</div>';
+                $maxcount = $count;
+            }
+            $this_time = str_pad( $h, 2, '0', STR_PAD_LEFT ) . ':' . str_pad( $m, 2, '0', STR_PAD_LEFT );
+            $opacity = $count ? $count * 0.05 : 1;
+            echo '<div style="opacity:' . $opacity . '" class="minute '. $active . '" title="' . $this_time . ($commands ? ' => ' . "\n" . implode( "\n\n", $commands ) : '' ) . '">';
+            if ( $count )
+            {
+                echo $count;
             }
             echo '</div>';
         }
         echo '</div>';
     }
+    echo '<div class="clear">Max count: ' . $maxcount . '</div>';
     echo '</div>';
-}
-
-
-
-
-
-
-
-
+    echo '<div class="day">Next Day</div>';
+echo '</div>';
+echo '<div class="month">Next Month</div>';
+?>
+</body>
+</html>
