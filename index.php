@@ -101,7 +101,7 @@ foreach ( $jobs as $job )
             padding:2px;
             text-align:center;
             margin:5px 0px;
-            width:41px;
+            width:50px;
         }
 
         .minute {
@@ -115,7 +115,7 @@ foreach ( $jobs as $job )
         .active {
             border:1px solid #000;
             background:#000;
-            color:white;
+/*            color:white;*/
             opacity:0.1;
         }
 
@@ -126,6 +126,7 @@ foreach ( $jobs as $job )
             border:0;
         }
     </style>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -188,11 +189,11 @@ echo '<div class="month">';
             // display the block, put commands in the title for hover preview
             $this_time = str_pad( $h, 2, '0', STR_PAD_LEFT ) . ':' . str_pad( $m, 2, '0', STR_PAD_LEFT );
             $opacity = $count ? $count * 0.05 : 1;
-            if ( $m % 15 == 0 ) { echo $this_time; }
-            echo '<div style="opacity:' . $opacity . '" class="minute '. $active . '" title="' . $this_time . '">';
+            if ( $m % 15 == 0 ) { echo '<div style="background:black;color:white">'.$this_time.'</div>'; }
+            echo '<div style="opacity:' . $opacity . '" data-count="'.$count.'" class="minute '. $active . '" title="' . $this_time . ($count?' ('.$count.')':'').'">';
             if ( $count )
             {
-                echo $count;
+                // echo $count;
             }
             echo '</div>';
         }
@@ -209,5 +210,21 @@ echo '<div class="month">
 </div>';
 
 ?>
+
+<script>
+
+$('.minute').each(function(){
+    var count = $(this).data('count')*1;
+    $(this).css('background', heatMapColorforValue(count))
+})
+
+function heatMapColorforValue(value){
+  var h = (1.0 - value) * 240
+  return "hsl(" + h + ", 100%, 50%)";
+}
+
+
+</script>
+
 </body>
 </html>
