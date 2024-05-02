@@ -76,7 +76,7 @@ foreach ( $jobs as $job )
             margin:10px auto;
             text-align:center;
             color:white;
-            width:1152px;
+            width:1368px;
         }
 
         .month a, .month a:visited {
@@ -188,7 +188,8 @@ echo '<div class="month">';
             }
             // display the block, put commands in the title for hover preview
             $this_time = str_pad( $h, 2, '0', STR_PAD_LEFT ) . ':' . str_pad( $m, 2, '0', STR_PAD_LEFT );
-            $opacity = $count ? $count * 0.05 : 1;
+            // $opacity = $count ? $count * 0.05 : 1;
+            $opacity = '0.75';
             if ( $m % 15 == 0 ) { echo '<div style="background:black;color:white">'.$this_time.'</div>'; }
             echo '<div style="opacity:' . $opacity . '" data-count="'.$count.'" class="minute '. $active . '" title="' . $this_time . ($count?' ('.$count.')':'').'">';
             if ( $count )
