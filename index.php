@@ -19,8 +19,8 @@ foreach ( $lines as $i => $line )
     $parts = explode( ' ', $line );
     $time = array_slice($parts, 0, 5);
 
-    $jobs[$i]['time'] = implode( $time, ' ' );
-    $jobs[$i]['command'] = implode( array_diff( $parts, $time ), ' ' );
+    $jobs[$i]['time'] = implode( ' ', $time );
+    $jobs[$i]['command'] = implode( ' ', array_diff( $parts, $time ) );
 }
 
 foreach ( $jobs as $job )
@@ -189,7 +189,7 @@ echo '<div class="month">';
             $this_time = str_pad( $h, 2, '0', STR_PAD_LEFT ) . ':' . str_pad( $m, 2, '0', STR_PAD_LEFT );
             $opacity = $count ? $count * 0.05 : 1;
             if ( $m % 15 == 0 ) { echo $this_time; }
-            echo '<div style="opacity:' . $opacity . '" class="minute '. $active . '" title="' . $this_time . ($commands ? ' => ' . "\n" . implode( "\n\n", $commands ) : '' ) . '">';
+            echo '<div style="opacity:' . $opacity . '" class="minute '. $active . '" title="' . $this_time . '">';
             if ( $count )
             {
                 echo $count;
