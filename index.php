@@ -200,7 +200,7 @@ echo '<div class="month">';
         }
         echo '</div>';
     }
-    echo '<div class="clear">Max count: ' . $maxcount . '</div>';
+    echo '<div class="clear">Max count per minute: ' . $maxcount . ' - Total Cron Jobs: '.count($lines).'</div>';
     echo '</div>';
 echo '</div>';
 echo '<div class="month">
