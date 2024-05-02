@@ -130,19 +130,19 @@ foreach ( $jobs as $job )
 <body>
 
 <?php
-$mnth = $_GET['m'] ?: date('n'); // (1-12)
+$mnth = ($_GET['m']??'') ?: date('n'); // (1-12)
 $prev_mnth = $mnth - 1;
 $next_mnth = $mnth + 1;
 if ( $prev_mnth == 0 ) { $prev_mnth = 12; }
 if ( $next_mnth == 13 ) { $next_mnth = 1; }
 
-$d = $_GET['d'] ?: date('j'); // (1-31)
+$d = ($_GET['d']??'') ?: date('j'); // (1-31)
 $prev_d = $d - 1;
 $next_d = $d + 1;
 if ( $prev_d == 0 ) { $prev_d = 31; }
 if ( $next_d == 32 ) { $next_d = 1; }
 
-$dow = $_GET['dow'] ?: date('w'); // (0-6) (0 = Sunday)
+$dow = ($_GET['dow']??'') ?: date('w'); // (0-6) (0 = Sunday)
 $prev_w = $dow - 1;
 $next_w = $dow + 1;
 if ( $prev_w == -1 ) { $prev_w = 6; }
